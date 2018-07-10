@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inventario.activoFijo.mapper.UsuarioMapper">
+	
+	<resultMap type="Usuario" id="Usuario">
+		<result column="id" property="id" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="informacion" property="informacion" />
+	</resultMap>
+
+    <select id="listar" parameterType="java.util.Map" resultMap="Usuario">
+        select * from usuario
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="parameter != null">
+				AND ${parameter} like '${value}'
+			</if>
+
+		</trim>
+    </select>
+</mapper>
