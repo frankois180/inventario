@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inventario.activoFijo.mapper.ActivoFijoMapper">
+
+	<resultMap id="activoFijoMap" type="activoFijo">
+		<result column="id" property="id" />
+		<result column="codigo" property="codigo" />
+		<result column="descripcion" property="descripcion" />
+		<result column="tipo" property="tipo" />
+		<result column="serial" property="serial" />
+		<result column="num_int_inv" property="num_int_inv" />
+		<result column="peso" property="peso" />
+		<result column="alto" property="alto" />
+		<result column="ancho" property="ancho" />
+		<result column="largo" property="largo" />
+		<result column="valor_compra" property="valor_compra" />
+		<result column="fecha_compra" property="fecha_compra" />
+		<result column="fecha_baja" property="fecha_baja" />
+		<result column="estado_actual" property="estado_actual" />
+	</resultMap>
+
+	<insert id="registrar" parameterType="activoFijo">
+		<selectKey keyProperty="id" resultType="java.lang.Long">
+			insert into
+			public.activo_fijo (codigo,descripcion,
+			tipo,serial,num_int_inv,
+			peso,alto,ancho,
+			largo,valor_compra,fecha_compra,
+			fecha_baja,estado_actual)
+
+			values (#{codigo},#{descripcion},
+			#{tipo},#{serial},#{num_int_inv},
+			#{peso},#{alto},#{ancho},
+			#{largo},#{valor_compra},#{fecha_compra},
+			#{fecha_baja},#{estado_actual})
+			returning id;
+		</selectKey>
+	</insert>
+
+	<update id="actualizar" parameterType="activoFijo">
+		update public.activo_fijo
+		set id = #{id},
+		codigo = #{codigo},descripcion = #{descripcion},
+		tipo =
+		#{tipo},serial = #{serial},
+		num_int_inv = #{num_int_inv},peso =
+		#{peso},
+		alto = #{alto},ancho = #{ancho},
+		largo = #{largo},valor_compra
+		= #{valor_compra},
+		fecha_compra = #{fecha_compra},fecha_baja =
+		#{fecha_baja},
+		estado_actual = #{estado_actual}
+		where id = #{id}
+	</update>
+
+	<select id="consultar" parameterType="activoFijo" resultMap="activoFijoMap">
+		select id,codigo,
+		descripcion,tipo,serial,num_int_inv,
+		peso,alto,ancho,largo,
+		valor_compra,fecha_compra,fecha_baja,estado_actual
+		from
+		public.activo_fijo where id = #{id}
+	</select>
+
+	<delete id="eliminar" parameterType="activoFijo">
+		delete from
+		public.activo_fijo
+		where id = #{id}
+	</delete>
+
+	<select id="listar" parameterType="java.util.Map" resultMap="activoFijoMap">
+		select id,codigo,
+		descripcion,tipo,serial,num_int_inv,
+		peso,alto,ancho,largo,
+		valor_compra,fecha_compra,fecha_baja,estado_actual
+		from
+		public.activo_fijo
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="parameter != null">
+				AND ${parameter} like '${value}'
+			</if>
+
+			<if test="codigo != null">
+				AND codigo = #{codigo}
+			</if>
+			<if test="codigo_like != null">
+				AND codigo ilike '%${codigo_like}%'
+			</if>
+
+
+			<if test="tipo != null">
+				AND tipo = #{tipo}
+			</if>
+			<if test="tipo_like != null">
+				AND tipo ilike '%${tipo_like}%'
+			</if>
+
+			<if test="serial != null">
+				AND serial = #{serial}
+			</if>
+			<if test="serial_like != null">
+				AND serial ilike '%${serial_like}%'
+			</if>
+
+			<if test="fechaInicial != null and fechaFinal != null ">
+				fecha_compra  between
+				cast(#{fechaInicial} as date)
+				and cast(#{fechaFinal} as date)
+			</if>
+		</trim>
+		<if test="limite_registros != null">
+			${limite_registros}
+		</if>
+	</select>
+
+	<select id="existe" resultType="java.lang.Boolean">
+		select count(*) != 0 AS exist from public.activo_fijo
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="parameter != null">
+				AND ${parameter} like '${value}'
+			</if>
+		</trim>
+		<if test="limite_registros != null">
+			${limite_registros}
+		</if>
+	</select>
+
+</mapper>
