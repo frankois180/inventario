@@ -1,0 +1,266 @@
+<div class="container">
+
+<div class="col-lg-12">
+    <br>
+    <div>
+        <input type="button" value="Nuevo" class="btn btn-primary" (click)="nuevo(true)" />
+        <input type="button" value="Buscar" class="btn btn-primary" (click)="nuevo(false)" />
+    </div>
+    <br>
+    <div class="float-left col-lg-12" *ngIf="visible">
+        <h1>Activo Fijo</h1>
+        <div *ngIf="estado">
+            <span>
+                {{estado == 'success' ? 'SE GUARDO EXITOSAMENTE' : 'ERROR AL GUARDAR'}}
+            </span>
+        </div>
+
+        <form #formActivoFijo="ngForm" (submit)="onSubmit()">
+          
+              
+                    <div class="form-group">
+                        <label>Codigo:</label>
+                            <input type="text" name="codigo" class="form-control col-sm-5"  [(ngModel)]="activoFijo.codigo" [disabled]="!registar" />
+
+                    </div>
+             
+            
+
+
+            <div class="form-group">
+                <label>Descripcion:</label>
+                <input type="text" name="descripcion" class="form-control col-sm-5" [(ngModel)]="activoFijo.descripcion" />
+            </div>
+
+
+            <div class="form-group">
+                <label>tipo:</label>
+                <input type="text" name="tipo" class="form-control col-sm-5" [(ngModel)]="activoFijo.tipo" />
+            </div>
+
+            <div class="form-group">
+                <label>serial:</label>
+                <input type="text" name="serial" class="form-control col-sm-5" [(ngModel)]="activoFijo.serial" />
+            </div>
+
+            <div class="form-group">
+                <label>num_int_inv:</label>
+                <input type="number" name="num_int_inv" class="form-control col-sm-5" [(ngModel)]="activoFijo.num_int_inv" />
+            </div>
+
+            <div class="form-group">
+                <label>peso:</label>
+                <input type="number" name="peso" class="form-control col-sm-5" [(ngModel)]="activoFijo.peso" />
+            </div>
+
+            <div class="form-group">
+                <label>alto:</label>
+                <input type="number" name="alto" class="form-control col-sm-5" [(ngModel)]="activoFijo.alto" />
+            </div>
+
+            <div class="form-group">
+                <label>ancho:</label>
+                <input type="number" name="ancho" class="form-control col-sm-5" [(ngModel)]="activoFijo.ancho" />
+            </div>
+
+            <div class="form-group">
+                <label>largo:</label>
+                <input type="number" name="largo" class="form-control col-sm-5" [(ngModel)]="activoFijo.largo" />
+            </div>
+            <div class="form-group">
+                <label>valor_compra:</label>
+                <input type="number" name="valor_compra" class="form-control col-sm-5" [(ngModel)]="activoFijo.valor_compra" />
+            </div>
+            <div>
+                <label>fecha_compra:</label>
+                <input type="date" name="fecha_compra" class="form-control col-sm-5" [(ngModel)]="activoFijo.fecha_compra" />
+            </div>
+            <div class="form-group">
+                <label>fecha_baja:</label>
+                <input type="date" name="fecha_baja" [(ngModel)]="activoFijo.fecha_baja" class="form-control col-sm-5" />
+            </div>
+
+            <div class="form-group" >
+                <label>estado_actual:</label>
+                
+                <select name="estado_actual"  class="form-control col-sm-5"  [(ngModel)]="selectEstado" (change)="getEstadoActual()">
+
+                    <option *ngFor="let es of estados" [ngValue]="es" >{{es.nombre}}</option>
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-success col-sm-2" value="Guardar" /> &nbsp;
+        </form>
+    </div>
+
+
+    <div *ngIf="!activosfijos && !visible" class=" container float-right col-lg-12">
+        <div class="form-row col-lg-12">
+            <div class="form-group">
+                <label>fecha inicial:</label>
+                <input type="date" name="fecha_inicio" class="form-control col-sm-12" [(ngModel)]="fechaIncial" />
+            </div>
+            &nbsp;
+            <div class="form-group">
+                <label>fecha final:</label>
+                <input type="date" name="fecha_final" class="form-control col-sm-12" [(ngModel)]="fechaFinal" />
+            </div>
+            &nbsp;
+            <div class="form-group">
+                <label>Tipo:</label>
+                <input type="text" name="tipo" class="form-control col-sm-12" [(ngModel)]="tipoAct" />
+            </div>
+
+            &nbsp;
+            <div class="form-group">
+                <label>Serial:</label>
+                <input type="text" name="serial" class="form-control col-sm-8" [(ngModel)]="serialAct" />
+            </div>
+
+            <div class="form-group">
+                <br>
+                <input type="button" class="btn btn-success col-sm-12" value="Consultar" (click)="getActivosFijo()" /> &nbsp;
+
+
+            </div>
+
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Estado actual</th>
+                <th>Serial</th>
+                <th>Fecha compra</th>
+                <th>Fecha baja</th>
+                <th>Accion</th>
+            </tr>
+            <tr *ngFor="let act of activosFijos">
+                <td>{{act.codigo}}</td>
+                <td>{{act.descripcion}}</td>
+                <td>{{act.estado_actual}}</td>
+                <td>{{act.serial}}</td>
+                <td>{{act.fecha_compra}}</td>
+                <td>{{act.fecha_baja}}</td>
+
+                <td>
+                    <a role="button" class="btn btn-primary" data-toggle="modal" href="#{{act.codigo}}">
+                        Editar
+                    </a>
+                    <input type="button" value="Eliminar" class="btn btn-primary" (click)="onEliminar(act)" />
+
+                    <div class="modal fade" id="{{act.codigo}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Activo fijo</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="codigo">Codigo:</label>
+                                                <input type="text" [disabled]="true"  class="form-control" id="codigo" name="codigo"  [(ngModel)]="act.codigo" >
+
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="desc">Descripcion:</label>
+                                                <input type="text" [disabled]="true" class="form-control" id="desc" [(ngModel)]="act.descripcion">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="tipo">Tipo:</label>
+                                                <input type="text" [disabled]="true" class="form-control" id="tipo" [(ngModel)]="act.tipo">
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label for="serial">Serial:</label>
+                                                <input type="text" class="form-control" id="serial" [(ngModel)]="act.serial">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="num_int_inv">num interno inventario</label>
+                                                    <input type="number" [disabled]="true" class="form-control" id="num_int_inv" [(ngModel)]="act.num_int_inv" >
+                                                </div>
+    
+                                                <div class="form-group col-md-6">
+                                                    <label for="peso">Peso:</label>
+                                                    <input type="number" [disabled]="true" class="form-control" id="peso" [(ngModel)]="act.peso">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="alto">Alto:</label>
+                                                        <input type="number" [disabled]="true" class="form-control" id="alto" [(ngModel)]="act.alto">
+                                                    </div>
+        
+                                                    <div class="form-group col-md-6">
+                                                        <label for="ancho">Ancho:</label>
+                                                        <input type="number" [disabled]="true" class="form-control" id="ancho" [(ngModel)]="act.ancho">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="alto">Largo:</label>
+                                                            <input type="number" [disabled]="true" class="form-control" id="alto" [(ngModel)]="act.largo">
+                                                        </div>
+            
+                                                        <div class="form-group col-md-6">
+                                                            <label for="ancho">valor compra:</label>
+                                                            <input type="number" [disabled]="true" class="form-control" id="ancho" [(ngModel)]="act.valor_compra">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="fecha_compra">Fecha compra:</label>
+                                                                <input type="date" [disabled]="true" class="form-control" id="fecha_compra" [(ngModel)]="act.fecha_compra">
+                                                            </div>
+                
+                                                            <div class="form-group col-md-6">
+                                                                <label for="ancho">fecha_baja:</label>
+                                                                <input type="date" class="form-control" id="ancho" [(ngModel)]="act.fecha_baja">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="estado_actual">Estado actual:</label>
+                                                                    <input type="text" class="form-control" [disabled]="true" id="estado" [(ngModel)]="act.estado_actual">
+                                                           
+                                                                </div>
+                    
+                                                    
+                                                            </div>
+    
+
+                                                            <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> 
+                                                                    <input type="button" value="Actualizar" class="btn btn-primary" (click)="onUpdate(act)" />
+                                                                </div>
+                                 
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+
+    <!-- Modal -->
+
+</div>

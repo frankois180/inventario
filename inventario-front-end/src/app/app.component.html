@@ -1,0 +1,19 @@
+<div class="container">
+
+<nav class="navbar navbar-expand-sm navbar-expand-sm">
+    <a class="navbar-brand" [routerLink]="['/inicio']">Inicio</a>
+    <ul class="navbar-nav">
+  
+      <!-- Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+         Menu
+        </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/activofijo']">Activo Fijo</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  </div>
+<router-outlet></router-outlet>
