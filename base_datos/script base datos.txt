@@ -1,0 +1,115 @@
+CREATE DATABASE activo_fijo_bd
+  WITH OWNER = postgres
+    ENCODING = 'UTF8'
+    TABLESPACE = pg_default;
+
+CREATE TABLE public.activo_fijo (
+  id SERIAL,
+  codigo VARCHAR,
+  descripcion VARCHAR NOT NULL,
+  tipo VARCHAR NOT NULL,
+  serial VARCHAR NOT NULL,
+  num_int_inv VARCHAR,
+  peso DOUBLE PRECISION NOT NULL,
+  alto DOUBLE PRECISION NOT NULL,
+  ancho DOUBLE PRECISION NOT NULL,
+  largo DOUBLE PRECISION NOT NULL,
+  valor_compra DOUBLE PRECISION NOT NULL,
+  fecha_compra DATE,
+  fecha_baja DATE,
+  estado_actual VARCHAR NOT NULL,
+  CONSTRAINT activo_fijo_codigo_key UNIQUE(codigo),
+  CONSTRAINT activo_fijo_pkey PRIMARY KEY(id)
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.area (
+  id SERIAL,
+  codigo VARCHAR NOT NULL,
+  nombre VARCHAR NOT NULL,
+  CONSTRAINT area_pkey PRIMARY KEY(id)
+) 
+WITH (oids = false);
+
+CREATE TABLE public.area_ciudad (
+  id SERIAL,
+  id_area INTEGER NOT NULL,
+  id_ciudad INTEGER NOT NULL,
+  CONSTRAINT area_ciudad_pkey PRIMARY KEY(id),
+  CONSTRAINT area_ciudad_fk_area FOREIGN KEY (id_area)
+    REFERENCES public.area(id)
+    MATCH PARTIAL
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT
+    NOT DEFERRABLE,
+  CONSTRAINT area_ciudad_fk_ciudad FOREIGN KEY (id_ciudad)
+    REFERENCES public.ciudad(id)
+    MATCH PARTIAL
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT
+    NOT DEFERRABLE
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.asignacion_area (
+  id SERIAL,
+  id_area_ciudad INTEGER NOT NULL,
+  id_act_fijo INTEGER NOT NULL,
+  CONSTRAINT asignacion_area_pkey PRIMARY KEY(id)
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.asignacion_persona (
+  id SERIAL,
+  id_persona INTEGER NOT NULL,
+  id_act_fijo INTEGER NOT NULL,
+  CONSTRAINT asignacion_persona_pkey PRIMARY KEY(id),
+  CONSTRAINT asignacion_persona_fk FOREIGN KEY (id_act_fijo)
+    REFERENCES public.activo_fijo(id)
+    MATCH PARTIAL
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+    NOT DEFERRABLE,
+  CONSTRAINT asignacion_persona_fk_persona FOREIGN KEY (id_persona)
+    REFERENCES public.persona(id)
+    MATCH PARTIAL
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT
+    NOT DEFERRABLE
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.ciudad (
+  id SERIAL,
+  codigo VARCHAR NOT NULL,
+  nombre VARCHAR NOT NULL,
+  CONSTRAINT ciudad_codigo_key UNIQUE(codigo),
+  CONSTRAINT ciudad_pkey PRIMARY KEY(id)
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.persona (
+  id INTEGER DEFAULT nextval('persna_id_seq'::regclass) NOT NULL,
+  nombre VARCHAR NOT NULL,
+  direccion VARCHAR NOT NULL,
+  telefono VARCHAR,
+  identificacion VARCHAR NOT NULL,
+  CONSTRAINT persna_pkey PRIMARY KEY(id),
+  CONSTRAINT persona_identificacion_key UNIQUE(identificacion)
+) 
+WITH (oids = false);
+
+
+CREATE TABLE public.usuario (
+  id SERIAL,
+  username VARCHAR NOT NULL,
+  password VARCHAR NOT NULL,
+  informacion VARCHAR,
+  CONSTRAINT usuario_pkey PRIMARY KEY(id)
+) 
+WITH (oids = false);
